@@ -1,0 +1,8 @@
+# Ouverture locale sous Windows (non publié)
+Lancer.bat
+
+# Système
+Thumbs.db
+desktop.ini
+.DS_Store
+*.log
