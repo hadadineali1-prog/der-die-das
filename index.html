@@ -254,6 +254,10 @@ body{
 .switch{display:flex;align-items:center;gap:11px;margin-top:14px;cursor:pointer;font-size:14.5px}
 .switch input{width:18px;height:18px;accent-color:#3f76d8;cursor:pointer}
 .field{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;font-size:14.5px}
+.goal-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+.goal-grid .field{flex-direction:column;align-items:stretch;gap:5px;margin-top:0;font-size:12.5px;text-align:center}
+.goal-grid .field span{color:var(--muted);font-weight:600}
+.goal-grid .field input{width:100%}
 .field input{width:90px;background:#0f141c;border:1px solid var(--line);border-radius:10px;color:var(--txt);font:inherit;padding:9px 11px;text-align:center}
 
 .add-form{display:grid;grid-template-columns:96px 1fr;gap:9px;margin-top:14px}
@@ -444,7 +448,14 @@ footer{text-align:center;color:var(--dim);font-size:11.5px;margin-top:34px;line-
       <div class="panel">
         <h3>Confort</h3>
         <label class="switch"><input type="checkbox" id="audioToggle"><span>Prononcer les mots avec une voix allemande</span></label>
-        <label class="field"><span>Objectif quotidien</span><input type="number" id="goalInput" min="5" max="200" step="5"></label>
+        <span>Objectifs quotidiens (réponses par jour)</span>
+        <div class="goal-grid">
+          <label class="field"><span>A1</span><input type="number" id="goal_A1" min="5" max="200" step="5"></label>
+          <label class="field"><span>A2</span><input type="number" id="goal_A2" min="5" max="200" step="5"></label>
+          <label class="field"><span>B1</span><input type="number" id="goal_B1" min="5" max="200" step="5"></label>
+          <label class="field"><span>B2</span><input type="number" id="goal_B2" min="5" max="200" step="5"></label>
+          <label class="field"><span>Tous</span><input type="number" id="goal_all" min="5" max="200" step="5"></label>
+        </div>
       </div>
 
       <div class="panel">

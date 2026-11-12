@@ -2,7 +2,7 @@
    Stratégie : stale-while-revalidate pour les fichiers de l'appli.
    L'appli s'affiche instantanément et se met à jour en arrière-plan. */
 
-const CACHE = 'ddd-v1';
+const CACHE = 'ddd-v2';
 const PRECACHE = [
   './',
   './index.html',

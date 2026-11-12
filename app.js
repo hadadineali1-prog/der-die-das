@@ -43,6 +43,25 @@ if (!Array.isArray(settings.levels) || settings.levels.length !== 1) settings.le
 else if (LEVELS.indexOf(settings.levels[0]) < 0) settings.levels = LEVELS.slice();
 if (settings.themes !== null && !Array.isArray(settings.themes)) settings.themes = null;
 
+/* objectif quotidien par niveau (et pour l'onglet « Tous ») ;
+   un ancien objectif unique personnalisé est migré tel quel,
+   sinon on prend les valeurs par défaut différenciées */
+var GOAL_DEFAULTS = { A1: 20, A2: 15, B1: 12, B2: 10, all: 25 };
+if (!settings.goals || typeof settings.goals !== 'object') {
+  var gOld = parseInt(settings.goal, 10);
+  if (gOld && gOld !== 20) {
+    var g0 = Math.max(5, gOld);
+    settings.goals = { A1: g0, A2: g0, B1: g0, B2: g0, all: g0 };
+  } else {
+    settings.goals = Object.assign({}, GOAL_DEFAULTS);
+  }
+}
+['A1', 'A2', 'B1', 'B2', 'all'].forEach(function (k) {
+  var v = parseInt(settings.goals[k], 10);
+  if (!v || v < 5) v = 20;
+  settings.goals[k] = Math.min(200, v);
+});
+
 var THEMES = [];
 BASE.forEach(function (w) { if (THEMES.indexOf(w.t) < 0) THEMES.push(w.t); });
 
@@ -194,6 +213,28 @@ function todayStats() {
   return daily[todayKey()] || { a: 0, c: 0 };
 }
 
+/* ---- objectifs par niveau ---- */
+
+function activeLevelKey() {
+  return (settings.levels || []).length === 1 ? settings.levels[0] : 'all';
+}
+
+function activeLevelLabel() {
+  var k = activeLevelKey();
+  return k === 'all' ? 'Tous' : k;
+}
+
+function goalFor(k) {
+  return Math.max(1, (settings.goals && settings.goals[k]) || 20);
+}
+
+/* réponses du jour pour un niveau précis (ou toutes pour « all ») */
+function todayLevelStats(k) {
+  if (k === 'all') return todayStats();
+  var d = daily[todayKey()];
+  return (d && d.by && d.by[k]) || { a: 0, c: 0 };
+}
+
 function streak() {
   var n = 0;
   for (var i = 0; i < 400; i++) {
@@ -290,9 +331,10 @@ function renderSession() {
   $('sDue').textContent = dueTotal();
   $('sStreak').textContent = streak();
 
-  var ts = todayStats();
-  var goal = Math.max(1, settings.goal || 20);
-  $('goalText').textContent = ts.a + ' / ' + goal;
+  var lk = activeLevelKey();
+  var ts = todayLevelStats(lk);
+  var goal = goalFor(lk);
+  $('goalText').textContent = activeLevelLabel() + ' : ' + ts.a + ' / ' + goal;
   $('goalFill').style.width = Math.min(100, 100 * ts.a / goal) + '%';
 }
 
@@ -377,6 +419,13 @@ function answer(art) {
   var d = daily[k] || (daily[k] = { a: 0, c: 0 });
   d.a++;
   if (ok) d.c++;
+
+  /* suivi séparé par niveau, pour l'objectif du niveau actif */
+  var lv = w.l || 'A1';
+  d.by = d.by || {};
+  d.by[lv] = d.by[lv] || { a: 0, c: 0 };
+  d.by[lv].a++;
+  if (ok) d.by[lv].c++;
 
   if (ok) {
     delete session.retryAt[w.id];
@@ -625,7 +674,10 @@ function renderSettings() {
   });
 
   $('audioToggle').checked = !!settings.audio;
-  $('goalInput').value = settings.goal || 20;
+  ['A1', 'A2', 'B1', 'B2', 'all'].forEach(function (lv) {
+    var input = $('goal_' + lv);
+    if (input) input.value = goalFor(lv);
+  });
 
   renderCustom();
   renderLevelTabs();
@@ -851,14 +903,18 @@ function bind() {
     if (settings.audio) speak('Hallo');
   });
 
-  $('goalInput').addEventListener('change', function () {
-    var v = parseInt(this.value, 10);
-    if (!v || v < 5) v = 5;
-    if (v > 200) v = 200;
-    this.value = v;
-    settings.goal = v;
-    persistSettings();
-    renderSession();
+  ['A1', 'A2', 'B1', 'B2', 'all'].forEach(function (lv) {
+    var input = $('goal_' + lv);
+    if (!input) return;
+    input.addEventListener('change', function () {
+      var v = parseInt(this.value, 10);
+      if (!v || v < 5) v = 5;
+      if (v > 200) v = 200;
+      this.value = v;
+      settings.goals[lv] = v;
+      persistSettings();
+      renderSession();
+    });
   });
 
   $('addForm').addEventListener('submit', function (e) {
