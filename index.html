@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e1116">
+<title>Der Die Das — entraîneur d'articles allemands</title>
+<meta name="description" content="735 noms allemands, niveaux A1 à B2. Choisis der, die ou das et retiens-les grâce à la répétition espacée.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Der Die Das">
+<style>
+:root{
+  --bg:#0b0e13;
+  --panel:#141a23;
+  --panel2:#10151d;
+  --line:#232c3a;
+  --txt:#e9eff8;
+  --muted:#8b98ad;
+  --dim:#5f6b7d;
+  --der:#5b8def;
+  --der-soft:rgba(91,141,239,.14);
+  --die:#ef5f86;
+  --die-soft:rgba(239,95,134,.14);
+  --das:#2fbf8f;
+  --das-soft:rgba(47,191,143,.14);
+  --ok:#2fbf8f;
+  --ko:#ef5f86;
+  --radius:22px;
+  --shadow:0 24px 60px rgba(0,0,0,.45);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  min-height:100vh;
+  background:var(--bg);
+  color:var(--txt);
+  font-family:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.glow{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0;opacity:.55}
+.g1{width:520px;height:520px;background:#1b3a6b;top:-220px;left:-140px}
+.g2{width:460px;height:460px;background:#3d1630;bottom:-240px;right:-160px;opacity:.45}
+.wrap{position:relative;z-index:1;max-width:820px;margin:0 auto;padding:22px 18px 60px}
+
+/* ---------- En-tête ---------- */
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:13px}
+.logo{
+  width:52px;height:52px;border-radius:15px;display:grid;place-items:center;
+  background:linear-gradient(145deg,#1c2532,#121821);border:1px solid var(--line);
+  font-weight:800;font-size:13px;letter-spacing:.5px;color:#c9d6e8;
+}
+.logo span{color:var(--dim)}
+.brand h1{margin:0;font-size:22px;letter-spacing:-.4px;font-weight:800}
+.brand h1 em{font-style:normal;color:var(--die)}
+.brand h1 span{color:var(--das)}
+.brand p{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
+
+.tabs{display:flex;gap:4px;background:var(--panel2);border:1px solid var(--line);padding:4px;border-radius:14px}
+.tab{
+  border:0;background:transparent;color:var(--muted);font:inherit;font-size:13.5px;font-weight:600;
+  padding:9px 15px;border-radius:10px;cursor:pointer;transition:.18s;
+}
+.tab:hover{color:var(--txt)}
+.tab.active{background:#222c3b;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+
+/* ---------- Niveaux ---------- */
+.levels{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:4px;
+  background:var(--panel2);border:1px solid var(--line);padding:4px;border-radius:14px;margin-bottom:12px;
+}
+.lvl{
+  border:0;background:transparent;color:var(--muted);font:inherit;font-size:13.5px;font-weight:700;
+  padding:9px 6px;border-radius:10px;cursor:pointer;transition:.18s;
+}
+.lvl:hover{color:var(--txt);background:#1a2230}
+.lvl.active{background:#222c3b;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.lvl[data-level="A1"].active{background:var(--der);color:#fff;box-shadow:0 4px 14px rgba(91,141,239,.35)}
+.lvl[data-level="A2"].active{background:var(--die);color:#fff;box-shadow:0 4px 14px rgba(239,95,134,.35)}
+.lvl[data-level="B1"].active{background:var(--das);color:#fff;box-shadow:0 4px 14px rgba(47,191,143,.35)}
+.lvl[data-level="B2"].active{background:#a06bf0;color:#fff;box-shadow:0 4px 14px rgba(160,107,240,.35)}
+
+/* ---------- Modes ---------- */
+.modes{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.mode{
+  border:1px solid var(--line);background:var(--panel2);color:var(--muted);
+  font:inherit;font-size:13px;font-weight:600;padding:8px 14px;border-radius:999px;cursor:pointer;transition:.18s;
+}
+.mode:hover{color:var(--txt);border-color:#31405a}
+.mode.active{background:#1f2a3a;color:#fff;border-color:#38507a}
+
+/* ---------- Carte principale ---------- */
+.card{
+  position:relative;background:linear-gradient(180deg,#161d27,#121821);
+  border:1px solid var(--line);border-radius:var(--radius);padding:26px 26px 24px;
+  box-shadow:var(--shadow);overflow:hidden;
+}
+.card::before{
+  content:"";position:absolute;inset:0 0 auto 0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.14),transparent);
+}
+.card.enter{animation:cardIn .28s ease}
+@keyframes cardIn{from{opacity:.35;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.card-top{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.chip{
+  font-size:11.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;
+  color:#aebbd0;background:#1d2634;border:1px solid #2a3546;padding:5px 10px;border-radius:999px;
+}
+.chip.ghost{background:transparent;color:var(--dim);border-color:#222b39}
+
+.word-row{display:flex;align-items:center;justify-content:center;gap:14px;min-height:118px}
+.word{
+  font-size:clamp(42px,11vw,76px);font-weight:800;letter-spacing:-1.5px;line-height:1.05;
+  text-align:center;word-break:break-word;
+}
+.icon{
+  flex:0 0 auto;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);
+  background:#1b2431;color:#cfd9e8;font-size:19px;cursor:pointer;transition:.18s;
+}
+.icon:hover{background:#243044;transform:scale(1.06)}
+.icon:active{transform:scale(.96)}
+
+.ask{text-align:center;color:var(--muted);font-size:14px;margin:2px 0 22px}
+
+.answers{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.ans{
+  position:relative;border:1.5px solid var(--line);background:#171f2a;color:var(--txt);
+  border-radius:16px;padding:20px 8px 17px;cursor:pointer;font:inherit;transition:.16s;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.ans span{font-size:27px;font-weight:800;letter-spacing:-.5px}
+.ans kbd{font-size:11px;font-weight:700;color:var(--dim);font-family:inherit}
+.ans.der span{color:var(--der)}
+.ans.die span{color:var(--die)}
+.ans.das span{color:var(--das)}
+.ans.der:hover{border-color:var(--der);background:var(--der-soft);transform:translateY(-2px)}
+.ans.die:hover{border-color:var(--die);background:var(--die-soft);transform:translateY(-2px)}
+.ans.das:hover{border-color:var(--das);background:var(--das-soft);transform:translateY(-2px)}
+.ans:disabled{cursor:default;transform:none}
+.ans.dim{opacity:.32}
+.ans.correct{color:#fff;transform:translateY(-2px)}
+.ans.der.correct{background:var(--der);border-color:var(--der);box-shadow:0 10px 26px rgba(91,141,239,.35)}
+.ans.die.correct{background:var(--die);border-color:var(--die);box-shadow:0 10px 26px rgba(239,95,134,.35)}
+.ans.das.correct{background:var(--das);border-color:var(--das);box-shadow:0 10px 26px rgba(47,191,143,.35)}
+.ans.correct span,.ans.correct kbd{color:#fff}
+.ans.wrong{border-color:var(--ko);background:rgba(239,95,134,.1);animation:shake .32s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+/* ---------- Correction ---------- */
+.feedback{margin-top:22px;border-top:1px solid var(--line);padding-top:20px;animation:fadeUp .22s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.verdict{font-size:14px;font-weight:700;margin-bottom:10px}
+.verdict.ok{color:var(--ok)}
+.verdict.ko{color:var(--ko)}
+.full{font-size:clamp(26px,7vw,38px);font-weight:800;letter-spacing:-.6px}
+.full .a-der{color:var(--der)}
+.full .a-die{color:var(--die)}
+.full .a-das{color:var(--das)}
+.details{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:12px;color:var(--muted);font-size:14.5px}
+.details b{color:#c6d2e4;font-weight:600}
+
+.primary{
+  margin-top:18px;border:0;border-radius:13px;padding:13px 22px;cursor:pointer;
+  background:linear-gradient(180deg,#eaf1fb,#cfdcee);color:#101720;font:inherit;font-weight:800;font-size:15px;
+  transition:.16s;
+}
+.primary:hover{filter:brightness(1.05);transform:translateY(-1px)}
+.primary:active{transform:none}
+.primary kbd{font-size:11px;color:#5c6b80;font-family:inherit;margin-left:6px;font-weight:700}
+
+/* ---------- État vide ---------- */
+.empty{text-align:center;padding:26px 6px 10px}
+.empty-emoji{font-size:46px;margin-bottom:10px}
+.empty h2{margin:0 0 8px;font-size:22px}
+.empty p{color:var(--muted);margin:0 auto 8px;max-width:420px;line-height:1.55}
+
+/* ---------- Objectif + stats de session ---------- */
+.goal{margin-top:18px}
+.goal-line{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-bottom:7px}
+.goal-line b{color:#c6d2e4}
+.goal-bar{height:7px;border-radius:99px;background:#161d27;border:1px solid var(--line);overflow:hidden}
+.goal-bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#3b6fd4,#2fbf8f);transition:width .4s ease}
+
+.session{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.session>div{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:12px 8px;text-align:center}
+.session b{display:block;font-size:19px;letter-spacing:-.3px}
+.session span{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px}
+
+/* ---------- Panneaux (stats / réglages) ---------- */
+.view{animation:fadeUp .2s ease}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:16px}
+.panel h3{margin:0 0 4px;font-size:16px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.muted{color:var(--muted);font-size:13.5px;line-height:1.55;margin:6px 0 0}
+
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.stat-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px 14px;text-align:center}
+.stat-card b{display:block;font-size:26px;letter-spacing:-.6px}
+.stat-card span{font-size:11.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px}
+
+.bars{display:flex;flex-direction:column;gap:14px;margin-top:16px}
+.bar-row{display:grid;grid-template-columns:54px 1fr 64px;align-items:center;gap:12px}
+.bar-row .lbl{font-weight:800;font-size:15px}
+.bar-track{height:9px;border-radius:99px;background:#0e131b;overflow:hidden;border:1px solid #1c2431}
+.bar-track i{display:block;height:100%;border-radius:99px}
+.bar-row .val{text-align:right;font-size:13px;color:var(--muted)}
+
+.conf{display:grid;grid-template-columns:56px repeat(3,1fr);gap:6px;margin-top:14px;font-size:13.5px}
+.conf .h{color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.5px;display:grid;place-items:center;padding:4px}
+.conf .rh{font-weight:800;display:grid;place-items:center}
+.conf .cell{border-radius:9px;padding:10px 6px;text-align:center;background:#10151d;border:1px solid #1b2330;color:#aab6c9;font-variant-numeric:tabular-nums}
+.conf .cell.diag{background:rgba(47,191,143,.09);border-color:rgba(47,191,143,.28);color:#d7f5ea;font-weight:700}
+.conf .cell.hot{background:rgba(239,95,134,.1);border-color:rgba(239,95,134,.3);color:#ffd9e2;font-weight:700}
+
+.chart{display:flex;align-items:flex-end;gap:5px;height:130px;margin-top:16px;padding-top:8px}
+.chart .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;height:100%}
+.chart .bar{width:100%;max-width:26px;border-radius:6px 6px 3px 3px;background:linear-gradient(180deg,#3f76d8,#2a4f96);min-height:3px;transition:height .3s}
+.chart .col.today .bar{background:linear-gradient(180deg,#43d3a2,#22946f)}
+.chart .d{font-size:9.5px;color:var(--dim)}
+
+.traps{margin-top:14px;display:flex;flex-direction:column;gap:8px;max-height:380px;overflow:auto}
+.trap{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#10151d;border:1px solid #1b2330;border-radius:12px;padding:11px 14px}
+.trap .w{font-weight:700}
+.trap .w .a-der{color:var(--der)}
+.trap .w .a-die{color:var(--die)}
+.trap .w .a-das{color:var(--das)}
+.trap .f{color:var(--dim);font-size:12.5px;margin-left:8px}
+.trap .n{font-size:12px;color:var(--ko);font-weight:700;white-space:nowrap}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chipbtn{
+  border:1px solid var(--line);background:#111721;color:var(--muted);font:inherit;font-size:13px;font-weight:600;
+  padding:8px 13px;border-radius:999px;cursor:pointer;transition:.16s;
+}
+.chipbtn:hover{color:var(--txt)}
+.chipbtn.on{background:#1f2b3d;border-color:#3a5682;color:#fff}
+
+.switch{display:flex;align-items:center;gap:11px;margin-top:14px;cursor:pointer;font-size:14.5px}
+.switch input{width:18px;height:18px;accent-color:#3f76d8;cursor:pointer}
+.field{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;font-size:14.5px}
+.field input{width:90px;background:#0f141c;border:1px solid var(--line);border-radius:10px;color:var(--txt);font:inherit;padding:9px 11px;text-align:center}
+
+.add-form{display:grid;grid-template-columns:96px 1fr;gap:9px;margin-top:14px}
+.add-form select,.add-form input{
+  background:#0f141c;border:1px solid var(--line);border-radius:11px;color:var(--txt);
+  font:inherit;font-size:14px;padding:11px 12px;min-width:0;
+}
+.add-form select{cursor:pointer}
+.add-form .wide{grid-column:1/-1}
+.add-form button{grid-column:1/-1;margin-top:2px}
+.custom-list{margin-top:12px;display:flex;flex-direction:column;gap:7px}
+.custom-item{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#10151d;border:1px solid #1b2330;border-radius:11px;padding:9px 13px;font-size:14px}
+.custom-item button{background:transparent;border:0;color:var(--dim);cursor:pointer;font-size:16px;padding:2px 6px;border-radius:6px}
+.custom-item button:hover{color:var(--ko);background:rgba(239,95,134,.1)}
+
+.row{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.ghost-btn{
+  border:1px solid var(--line);background:#111721;color:#c6d2e4;font:inherit;font-size:13.5px;font-weight:600;
+  padding:10px 15px;border-radius:11px;cursor:pointer;transition:.16s;
+}
+.ghost-btn:hover{background:#18202c;border-color:#31405a}
+.ghost-btn.file{display:inline-flex;align-items:center}
+.danger{
+  border:1px solid rgba(239,95,134,.35);background:rgba(239,95,134,.07);color:#ffb9c9;
+  font:inherit;font-size:13.5px;font-weight:600;padding:10px 15px;border-radius:11px;cursor:pointer;transition:.16s;
+}
+.danger:hover{background:rgba(239,95,134,.14)}
+
+.badge{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:99px;background:#222c3b;color:#aebbd0;font-size:12px;vertical-align:2px;margin-left:6px}
+
+footer{text-align:center;color:var(--dim);font-size:11.5px;margin-top:34px;line-height:1.6}
+
+/* ---------- Petits écrans ---------- */
+@media (max-width:640px){
+  .wrap{padding:16px 13px 46px}
+  .top{gap:12px;margin-bottom:16px}
+  .brand h1{font-size:19px}
+  .brand p{font-size:11.5px}
+  .logo{width:44px;height:44px;border-radius:13px;font-size:11px}
+  .tabs{width:100%;justify-content:space-between}
+  .tab{flex:1;padding:9px 8px;font-size:12.5px}
+  .card{padding:20px 16px 18px;border-radius:18px}
+  .word-row{min-height:96px;gap:8px}
+  .ans{padding:16px 4px 13px;border-radius:13px}
+  .ans span{font-size:22px}
+  .session{grid-template-columns:repeat(2,1fr)}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .conf{grid-template-columns:44px repeat(3,1fr)}
+  .bar-row{grid-template-columns:44px 1fr 52px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<div class="glow g1"></div>
+<div class="glow g2"></div>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="logo">D<span>·</span>D<span>·</span>D</div>
+      <div>
+        <h1>Der <em>Die</em> <span>Das</span></h1>
+        <p>Entraîneur d'articles allemands</p>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button class="tab active" data-view="train" type="button">Entraîner</button>
+      <button class="tab" data-view="stats" type="button">Statistiques</button>
+      <button class="tab" data-view="settings" type="button">Réglages</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ============ ENTRAÎNEMENT ============ -->
+    <section class="view" id="view-train">
+      <div class="levels" id="levelTabs">
+        <button class="lvl active" data-level="all" type="button">Tous</button>
+        <button class="lvl" data-level="A1" type="button">A1</button>
+        <button class="lvl" data-level="A2" type="button">A2</button>
+        <button class="lvl" data-level="B1" type="button">B1</button>
+        <button class="lvl" data-level="B2" type="button">B2</button>
+      </div>
+      <div class="modes" id="modes">
+        <button class="mode active" data-mode="train" type="button">Mode libre</button>
+        <button class="mode" data-mode="revision" type="button">Révision du jour</button>
+        <button class="mode" data-mode="errors" type="button">Mes erreurs</button>
+      </div>
+
+      <div class="card" id="card">
+        <div class="card-top">
+          <span class="chip" id="chipTheme">—</span>
+          <span class="chip ghost" id="chipLevel">—</span>
+          <span class="chip ghost" id="chipBox">—</span>
+        </div>
+
+        <div class="word-row">
+          <div class="word" id="word">…</div>
+          <button class="icon" id="speak" type="button" title="Écouter le mot (R)">🔊</button>
+        </div>
+
+        <p class="ask" id="ask">Quel est l'article ?</p>
+
+        <div class="answers" id="answers">
+          <button class="ans der" data-art="der" type="button"><span>der</span><kbd>1</kbd></button>
+          <button class="ans die" data-art="die" type="button"><span>die</span><kbd>2</kbd></button>
+          <button class="ans das" data-art="das" type="button"><span>das</span><kbd>3</kbd></button>
+        </div>
+
+        <div class="feedback" id="feedback" hidden>
+          <div class="verdict" id="verdict"></div>
+          <div class="full" id="full"></div>
+          <div class="details">
+            <span id="plural"></span>
+            <span id="fr"></span>
+          </div>
+          <button class="primary" id="next" type="button">Suivant <kbd>Entrée</kbd></button>
+        </div>
+
+        <div class="empty" id="empty" hidden>
+          <div class="empty-emoji">🎉</div>
+          <h2 id="emptyTitle">Rien à réviser</h2>
+          <p id="emptyText"></p>
+          <button class="primary" id="emptyBtn" type="button">Passer en mode libre</button>
+        </div>
+      </div>
+
+      <div class="goal">
+        <div class="goal-line"><span>Objectif du jour</span><b id="goalText">0 / 20</b></div>
+        <div class="goal-bar"><i id="goalFill"></i></div>
+      </div>
+
+      <div class="session">
+        <div><b id="sAnswered">0</b><span>réponses</span></div>
+        <div><b id="sAcc">—</b><span>précision</span></div>
+        <div><b id="sDue">0</b><span>à revoir</span></div>
+        <div><b id="sStreak">0</b><span>jours d'affilée</span></div>
+      </div>
+    </section>
+
+    <!-- ============ STATISTIQUES ============ -->
+    <section class="view" id="view-stats" hidden>
+      <div class="stats-grid">
+        <div class="stat-card"><b id="statTotal">0</b><span>réponses</span></div>
+        <div class="stat-card"><b id="statAcc">—</b><span>précision</span></div>
+        <div class="stat-card"><b id="statMastered">0</b><span>mots maîtrisés</span></div>
+        <div class="stat-card"><b id="statDue">0</b><span>à revoir</span></div>
+      </div>
+
+      <div class="panel">
+        <h3>Précision par article</h3>
+        <p class="muted">Le pourcentage de fois où tu trouves le bon article.</p>
+        <div class="bars" id="genderBars"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Ce que tu confonds</h3>
+        <p class="muted">Ligne = ta réponse. Colonne = le bon article.</p>
+        <div class="conf" id="confTable"></div>
+      </div>
+
+      <div class="panel">
+        <h3>14 derniers jours</h3>
+        <p class="muted">Nombre de réponses par jour.</p>
+        <div class="chart" id="chart"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Mes pièges <span class="badge" id="trapCount">0</span></h3>
+          <button class="ghost-btn" id="drillTraps" type="button">Réviser ces mots</button>
+        </div>
+        <p class="muted">Les mots sur lesquels tu t'es trompé, du plus fréquent au moins fréquent.</p>
+        <div class="traps" id="traps"></div>
+      </div>
+    </section>
+
+    <!-- ============ RÉGLAGES ============ -->
+    <section class="view" id="view-settings" hidden>
+      <div class="panel">
+        <h3>Thèmes</h3>
+        <p class="muted">Tu peux te concentrer sur un thème (la nourriture, la maison…).</p>
+        <div class="chips" id="themeChips"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Confort</h3>
+        <label class="switch"><input type="checkbox" id="audioToggle"><span>Prononcer les mots avec une voix allemande</span></label>
+        <label class="field"><span>Objectif quotidien</span><input type="number" id="goalInput" min="5" max="200" step="5"></label>
+      </div>
+
+      <div class="panel">
+        <h3>Ajouter un mot</h3>
+        <p class="muted">Tes mots sont gardés sur cet ordinateur et reviennent comme les autres.</p>
+        <form class="add-form" id="addForm" autocomplete="off">
+          <select id="addArt" aria-label="Article">
+            <option>der</option><option>die</option><option>das</option>
+          </select>
+          <input id="addNoun" placeholder="Nom (ex. Hund)" required>
+          <input id="addPlural" class="wide" placeholder="Pluriel (ex. die Hunde) — facultatif">
+          <input id="addFr" class="wide" placeholder="Traduction française (ex. le chien) — facultatif">
+          <button class="primary" type="submit">Ajouter le mot</button>
+        </form>
+        <div class="custom-list" id="customList"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Installer l'appli</h3>
+        <p class="muted">Ajoute Der Die Das à ton écran d'accueil : elle s'ouvre en plein écran et fonctionne sans connexion.</p>
+        <div class="row">
+          <button class="ghost-btn" id="installBtn" type="button" hidden>Installer maintenant</button>
+        </div>
+        <p class="muted" id="installHint">iPhone : bouton Partager, puis « Sur l'écran d'accueil ». Android : menu ⋮, puis « Installer l'application ».</p>
+      </div>
+
+      <div class="panel">
+        <h3>Sauvegarde</h3>
+        <p class="muted">Tes progrès sont enregistrés dans le navigateur. Exporte de temps en temps pour ne rien perdre.</p>
+        <div class="row">
+          <button class="ghost-btn" id="exportBtn" type="button">Exporter mes progrès</button>
+          <label class="ghost-btn file">Importer<input type="file" id="importInput" accept="application/json,.json" hidden></label>
+          <button class="danger" id="resetBtn" type="button">Tout réinitialiser</button>
+        </div>
+        <p class="muted" id="storageNote"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer>Deutsch mit Diaa · fonctionne hors ligne · tout reste sur ton ordinateur</footer>
+</div>
+
+<script src="mots.js"></script>
+<script src="app.js"></script>
+<script>
+/* --- Installation (PWA) et mode hors ligne --- */
+(function () {
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    });
+  }
+
+  var btn = document.getElementById('installBtn');
+  var hint = document.getElementById('installHint');
+  var deferred = null;
+
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    deferred = e;
+    if (btn) btn.hidden = false;
+  });
+
+  if (btn) {
+    btn.addEventListener('click', function () {
+      if (!deferred) return;
+      deferred.prompt();
+      deferred.userChoice.then(function () {
+        deferred = null;
+        btn.hidden = true;
+      });
+    });
+  }
+
+  window.addEventListener('appinstalled', function () {
+    if (btn) btn.hidden = true;
+    if (hint) hint.textContent = "C'est installé. L'appli est maintenant sur ton écran d'accueil.";
+  });
+})();
+</script>
+</body>
+</html>
