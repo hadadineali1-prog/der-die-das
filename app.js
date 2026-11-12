@@ -787,6 +787,9 @@ function importData(file) {
     if (!Array.isArray(settings.levels) || settings.levels.length !== 1 || LEVELS.indexOf(settings.levels[0]) < 0) {
       settings.levels = LEVELS.slice();
     }
+    if (!settings.goals || typeof settings.goals !== 'object') {
+      settings.goals = Object.assign({}, GOAL_DEFAULTS);
+    }
 
     save(KEY.prog, prog);
     save(KEY.daily, daily);
@@ -811,6 +814,7 @@ function resetAll() {
   conf = {};
   custom = [];
   settings = Object.assign({}, DEFAULT_SETTINGS);
+  settings.goals = Object.assign({}, GOAL_DEFAULTS);
 
   save(KEY.prog, prog);
   save(KEY.daily, daily);
